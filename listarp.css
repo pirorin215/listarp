@@ -1,0 +1,175 @@
+/* listarp.css */
+body { margin: 0; /* padding-top はJavaScriptで設定 */ }
+
+#controlsContainer {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 15px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    /* 高さを明示的に設定しないことで、コンテンツに合わせる */
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%; /* 幅を広げる */
+    table-layout: fixed;
+    margin-top: 0; /* controlsContainer との間に余白がないように */
+}
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+th {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+    word-wrap: break-word;
+    background-color: #e0e0e0;
+    color: #333;
+    font-weight: bold;
+    position: sticky;
+    top: var(--controls-container-height); /* JavaScriptで設定されるカスタムプロパティを使用 */
+    z-index: 90;
+}
+
+
+/* 列幅の指定 */
+th:nth-child(1), td:nth-child(1) { width: 10%; } /* IPアドレス */
+th:nth-child(2), td:nth-child(2) { width: 20%; } /* デバイス名 */
+th:nth-child(3), td:nth-child(3) { width:  5%; } /* 状態 */
+th:nth-child(4), td:nth-child(4) { width: 10%; } /* MACアドレス */
+th:nth-child(5), td:nth-child(5) { width: 20%; } /* ベンダー */
+th:nth-child(6), td:nth-child(6) { width: 10%; } /* 最終検出日時 */
+
+/* 状態列のセルの背景色 */
+.status-bg-green { background-color: lightgreen; }
+.status-bg-orange { background-color: orange; }
+.status-bg-gray { background-color: lightgray; }
+.status-bg-red { background-color: pink; }
+
+.ip-empty {
+    font-style: italic;
+    color: #999;
+}
+.device-name-input {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+/* ボタンのスタイル統一 */
+.control-button {
+    font-size: 16px;
+    padding: 8px 15px;
+    width: 150px; /* ボタンの幅を統一 */
+    box-sizing: border-box; /* paddingとborderを幅に含める */
+    background-color: #f0f0f0; /* デフォルトのボタン色 */
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+.control-button:hover:not(:disabled) {
+    opacity: 0.8;
+}
+.control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #e0e0e0; /* 無効時の背景色 */
+}
+
+/* 特定のボタンのスタイル */
+#saveChangesButton.active { /* active クラスが追加されたときにピンク色にする */
+    background-color: #ff69b4; /* ピンク色 */
+    color: white;
+    border: 1px solid #e0509a;
+}
+#saveChangesButton.active:hover {
+    background-color: #e0509a;
+}
+
+/* フリッカーアニメーション */
+@keyframes flicker {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+.flicker-animation {
+    animation: flicker 0.3s ease-in-out 3; /* 3回点滅 */
+}
+
+#deviceNameSearch {
+    padding: 8px;
+    width: 250px;
+    font-size: 16px;
+}
+#statusHeader {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* 検索機能のグループ化 */
+.search-group {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #e9e9e9;
+}
+.mac-address {
+    font-family: "Lucida Console", "Monaco", monospace; /* 等幅フォントを指定 */
+    letter-spacing: 0.5px;
+}
+
+/* スマートフォン向けの調整 */
+@media (max-width: 768px) {
+    body {
+        overflow-x: auto; /* 横スクロールを可能にする */
+    }
+
+    #controlsContainer {
+        padding: 10px;
+        gap: 5px;
+        justify-content: center;
+    }
+
+    table {
+        width: 600px; /* スマートフォンでテーブル全体が見切れないように固定幅を設定 */
+        min-width: 600px; /* これより小さくならないように */
+    }
+
+    th, td {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    /* 列幅の再調整 (必要であれば) */
+    th:nth-child(1), td:nth-child(1) { width: 70px; } /* IPアドレス */
+    th:nth-child(2), td:nth-child(2) { width: 100px; } /* MACアドレス */
+    th:nth-child(3), td:nth-child(3) { width: 100px; } /* ベンダー */
+    th:nth-child(4), td:nth-child(4) { width: 100px; } /* デバイス名 */
+    th:nth-child(5), td:nth-child(5) { width: 60px; } /* 状態 */
+    th:nth-child(6), td:nth-child(6) { width: 110px; } /* 最終検出日時 */
+
+    .control-button {
+        width: 120px;
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+
+    #deviceNameSearch {
+        width: 180px;
+        font-size: 14px;
+        padding: 6px;
+    }
+}
