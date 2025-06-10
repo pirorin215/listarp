@@ -137,12 +137,12 @@ $css_version = filemtime('listarp.css');
 <table border='1' id="deviceTable">
     <thead>
         <tr>
-            <th>IPアドレス</th>
-            <th>デバイス名</th>
-            <th id="statusHeader">状態</th>
-            <th>MACアドレス</th>
-            <th>ベンダー</th>
-            <th>最終検出日時</th>
+            <th class="col-ip-address">IPアドレス</th>
+            <th class="col-device-name">デバイス名</th>
+            <th class="col-status" id="statusHeader">状態</th>
+            <th class="col-mac-address">MACアドレス</th>
+            <th class="col-vendor">ベンダー</th>
+            <th class="col-last-detected">最終検出日時</th>
         </tr>
     </thead>
     <tbody>
@@ -180,14 +180,14 @@ $css_version = filemtime('listarp.css');
         $ip_td_class = empty($ip) ? "ip-empty" : "";
     ?>
     <tr data-status-key="<?= htmlspecialchars($status_key) ?>">
-        <td class="<?= $ip_td_class ?>"><?= htmlspecialchars($ip) ?></td>
-        <td class="device-name-cell">
+        <td class="col-ip-address <?= $ip_td_class ?>"><?= htmlspecialchars($ip) ?></td>
+        <td class="col-device-name device-name-cell">
             <input type="text" value="<?= htmlspecialchars($name) ?>" class="device-name-input" data-original-name="<?= htmlspecialchars($name) ?>">
         </td>
-        <td class="status-cell <?= $status_cell_bg_class ?>"><?= htmlspecialchars($status_key) ?></td>
-        <td class="mac-address"><?= htmlspecialchars($mac) ?></td>
-        <td><?= htmlspecialchars($vendor_name) ?></td>
-        <td><?= htmlspecialchars($last_detected_display) ?></td>
+        <td class="col-status status-cell <?= $status_cell_bg_class ?>"><?= htmlspecialchars($status_key) ?></td>
+        <td class="col-mac-address mac-address"><?= htmlspecialchars($mac) ?></td>
+        <td class="col-vendor"><?= htmlspecialchars($vendor_name) ?></td>
+        <td class="col-last-detected"><?= htmlspecialchars($last_detected_display) ?></td>
     </tr>
     <?php
         ob_flush();

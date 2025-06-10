@@ -43,14 +43,13 @@ th {
     z-index: 90;
 }
 
-
 /* 列幅の指定 */
-th:nth-child(1), td:nth-child(1) { width: 10%; } /* IPアドレス */
-th:nth-child(2), td:nth-child(2) { width: 20%; } /* デバイス名 */
-th:nth-child(3), td:nth-child(3) { width:  5%; } /* 状態 */
-th:nth-child(4), td:nth-child(4) { width: 10%; } /* MACアドレス */
-th:nth-child(5), td:nth-child(5) { width: 20%; } /* ベンダー */
-th:nth-child(6), td:nth-child(6) { width: 10%; } /* 最終検出日時 */
+.col-ip-address { width: 10%; } /* IPアドレス */
+.col-device-name { width: 20%; } /* デバイス名 */
+.col-status { width: 8%; } /* 状態 */
+.col-mac-address { width: 10%; } /* MACアドレス */
+.col-vendor { width: 20%; } /* ベンダー */
+.col-last-detected { width: 10%; } /* 最終検出日時 */
 
 /* 状態列のセルの背景色 */
 .status-bg-green { background-color: lightgreen; }
@@ -154,13 +153,13 @@ th:nth-child(6), td:nth-child(6) { width: 10%; } /* 最終検出日時 */
         font-size: 14px;
     }
 
-    /* 列幅の再調整 (必要であれば) */
-    th:nth-child(1), td:nth-child(1) { width: 70px; } /* IPアドレス */
-    th:nth-child(2), td:nth-child(2) { width: 100px; } /* MACアドレス */
-    th:nth-child(3), td:nth-child(3) { width: 100px; } /* ベンダー */
-    th:nth-child(4), td:nth-child(4) { width: 100px; } /* デバイス名 */
-    th:nth-child(5), td:nth-child(5) { width: 60px; } /* 状態 */
-    th:nth-child(6), td:nth-child(6) { width: 110px; } /* 最終検出日時 */
+    /* 列幅の再調整 (クラスベースに変更) */
+    .col-ip-address { width: 70px; } /* IPアドレス */
+    .col-device-name { width: 100px; } /* デバイス名 */
+    .col-status { width: 60px; } /* 状態 */
+    .col-mac-address { width: 100px; } /* MACアドレス */
+    .col-vendor { width: 100px; } /* ベンダー */
+    .col-last-detected { width: 110px; } /* 最終検出日時 */
 
     .control-button {
         width: 120px;
