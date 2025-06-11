@@ -160,9 +160,6 @@ $js_version = filemtime('listarp.js');
             $is_alive = false;
             $status_key = ($name == STATUS_UNKNOWN_DEVICE) ? STATUS_STOPPED_UNREGISTERED : STATUS_STOPPED_REGISTERED;
         } else {
-            // pingのチェックは時間がかかるため、リアルタイム性を重視する場合は、別途AJAXで実施するか、
-            // 検出されたばかりのデバイスに限定するなど、考慮が必要です。
-            // 今回は既存のロジックを踏襲します。
             $is_alive = check_ping($ip);
             $status_key = ($name == STATUS_UNKNOWN_DEVICE)
                 ? ($is_alive ? STATUS_ALIVE_UNREGISTERED : STATUS_STOPPED_UNREGISTERED)

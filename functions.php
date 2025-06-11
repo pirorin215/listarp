@@ -72,13 +72,9 @@ function is_local_administered_mac($mac) {
     if (count($parts) < 1) {
         return false;
     }
-    // 最初のオクテットの16進数表現
     $first_octet_hex = $parts[0];
-    // 16進数を2進数に変換
     $first_octet_bin = str_pad(base_convert($first_octet_hex, 16, 2), 8, '0', STR_PAD_LEFT);
-    // 2番目のビット (U/Lビット) をチェック
-    // 0番目から数えて1番目のビット (右から2番目)
-    return $first_octet_bin[6] === '1'; // 0-indexed で 6番目のビットが U/L ビット
+    return $first_octet_bin[6] === '1';
 }
 
 /**

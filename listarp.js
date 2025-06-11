@@ -24,13 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const statusHeader = document.getElementById('statusHeader');
     const updateOuiButton = document.getElementById('updateOuiButton');
 
-    // PHPの定数をJavaScriptに渡す (これらはHTML内で直接定義されるように変更)
-    // const STATUS_ALIVE_REGISTERED = "<?php echo STATUS_ALIVE_REGISTERED; ?>";
-    // const STATUS_ALIVE_UNREGISTERED = "<?php echo STATUS_ALIVE_UNREGISTERED; ?>";
-    // const STATUS_STOPPED_REGISTERED = "<?php echo STATUS_STOPPED_REGISTERED; ?>";
-    // const STATUS_STOPPED_UNREGISTERED = "<?php echo STATUS_STOPPED_UNREGISTERED; ?>";
-    // const STATUS_ALL_DISPLAY = "<?php echo STATUS_ALL_DISPLAY; ?>";
-
     // 代わりにHTMLからデータ属性として取得
     const STATUS_ALIVE_REGISTERED = document.body.dataset.statusAliveRegistered;
     const STATUS_ALIVE_UNREGISTERED = document.body.dataset.statusAliveUnregistered;
@@ -217,8 +210,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // コントロールコンテナを表示
         controlsContainer.style.display = "flex";
 
-        // レイアウトが確定した後に高さを取得するため、さらに短い遅延を入れるか、
-        // requestAnimationFrame を使用すると、ブラウザの描画タイミングに合わせられる
         requestAnimationFrame(() => {
             const controlsHeight = controlsContainer.offsetHeight;
 
@@ -231,7 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 必要であれば、ここでテーブルのスクロール位置を調整する（例: 0に設定）
             // window.scrollTo(0, 0); // これはページの最上部にスクロールしてしまうので、必要な場合にのみ使用
-
             console.log("Controls Container Height:", controlsHeight);
             console.log("Body Padding Top:", body.style.paddingTop);
             console.log("Custom Property --controls-container-height:", document.documentElement.style.getPropertyValue('--controls-container-height'));

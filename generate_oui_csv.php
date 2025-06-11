@@ -98,17 +98,13 @@ function generate_filtered_oui_csv($source_type) {
         // OUI (base 16) の行を検出 (例: 286FB9 (base 16) Extreme Networks Headquarters)
         // この行は組織名を含まないが、直前の (hex) 行の組織名を使用する
         else if (preg_match('/^([0-9A-F]{6})\s+\(base 16\)\s*(.*)$/', $line, $matches)) {
-            // (hex)行のOUIがまだ設定されていない場合、この行のOUIを使用
             if (empty($current_oui_hex)) {
-                 // base 16形式からハイフン付きhex形式に変換
                 $current_oui_hex = substr($matches[1], 0, 2) . '-' . substr($matches[1], 2, 2) . '-' . substr($matches[1], 4, 2);
             }
-            // もし (base 16) の行に組織名がある場合は更新（ただしoui.txtの例では通常空）
             if (!empty(trim($matches[2]))) {
                  $current_organization = trim($matches[2]);
             }
         }
-        // それ以外の行（住所など）はスキップ
     }
 
     // 最後のOUIと組織名を、ターゲットリストに含まれていれば保存

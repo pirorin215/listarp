@@ -1,4 +1,4 @@
-<?php
+<?pp
 // api_handler.php
 // AJAXリクエストの処理を担当
 
@@ -27,12 +27,9 @@ if (isset($data['action'])) {
                     $mac = normalize_mac($raw_mac_from_post); // POSTされたMACアドレスを正規化
                     $name = $device['name'];
 
-                    // 「Unknown」ではない場合、かつ空文字列ではない場合のみ更新/追加
                     if (strtolower(trim($name)) !== strtolower(STATUS_UNKNOWN_DEVICE) && trim($name) !== '') {
                         $current_map[$mac] = trim($name); // 余分な空白を除去
                     } else {
-                        // デバイス名が'Unknown'になった場合、CSVから削除（存在する場合）
-                        // または空文字列に変更された場合
                         if (isset($current_map[$mac])) {
                             unset($current_map[$mac]);
                         }
