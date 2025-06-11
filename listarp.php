@@ -3,8 +3,7 @@
 // メインのスクリプト - 画面表示に特化
 
 require_once 'config.php';
-require_once 'functions.php';
-require_once 'data_handler.php';
+require_once 'utils.php';
 
 // ここからGETリクエスト（通常のページ表示）の場合の処理
 ob_implicit_flush(true);

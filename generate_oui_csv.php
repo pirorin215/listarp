@@ -1,7 +1,7 @@
 <?php
 
 require_once 'config.php';
-require_once 'functions.php';
+require_once 'utils.php';
 
 /**
  * CSVファイルを読み込み、MACアドレスのOUI部分を抽出して配列として返す汎用関数
