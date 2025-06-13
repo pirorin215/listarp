@@ -1,4 +1,4 @@
-<?pp
+<?php
 // api_handler.php
 // AJAXリクエストの処理を担当
 
