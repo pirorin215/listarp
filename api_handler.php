@@ -35,10 +35,42 @@ if (isset($data['action'])) {
                     }
                 }
 
-                if (save_device_mapping($current_map)) {
-                    $response = ['status' => 'success', 'message' => 'CSVが更新されました。'];
+                $current_icon_map = load_device_icons();
+
+                foreach ($updated_devices as $device) {
+                    $raw_mac_from_post = $device['mac'];
+                    $mac = normalize_mac($raw_mac_from_post);
+
+                    if (isset($device['name'])) {
+                        $name = $device['name'];
+                        if (strtolower(trim($name)) !== strtolower(STATUS_UNKNOWN_DEVICE) && trim($name) !== '') {
+                            $current_map[$mac] = trim($name);
+                        } else {
+                            if (isset($current_map[$mac])) {
+                                unset($current_map[$mac]);
+                            }
+                        }
+                    }
+
+                    if (isset($device['icon'])) {
+                        $icon = $device['icon'];
+                        if (trim($icon) !== '' && $icon !== 'unknown.png') { // unknown.png は保存しない
+                            $current_icon_map[$mac] = trim($icon);
+                        } else {
+                            if (isset($current_icon_map[$mac])) {
+                                unset($current_icon_map[$mac]);
+                            }
+                        }
+                    }
+                }
+
+                $name_save_success = save_device_mapping($current_map);
+                $icon_save_success = save_device_icons($current_icon_map);
+
+                if ($name_save_success && $icon_save_success) {
+                    $response = ['status' => 'success', 'message' => 'デバイス名とアイコンが更新されました。'];
                 } else {
-                    $response = ['status' => 'error', 'message' => 'CSVファイルへの書き込みに失敗しました。'];
+                    $response = ['status' => 'error', 'message' => 'ファイルへの書き込みに失敗しました。'];
                 }
             } else {
                 $response = ['status' => 'error', 'message' => '無効なデータ形式です。'];

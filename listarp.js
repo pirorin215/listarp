@@ -24,6 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const statusHeader = document.getElementById('statusHeader');
     const updateOuiButton = document.getElementById('updateOuiButton');
 
+    // アイコン関連の要素
+    const iconModal = document.getElementById('iconModal');
+    const closeButton = iconModal.querySelector('.close-button');
+    const iconGrid = document.getElementById('iconGrid');
+    const iconFiles = JSON.parse(document.body.dataset.iconFiles);
+    let currentEditingIcon = null; // 現在編集中のアイコン要素を保持
+
     // 代わりにHTMLからデータ属性として取得
     const STATUS_ALIVE_REGISTERED = document.body.dataset.statusAliveRegistered;
     const STATUS_ALIVE_UNREGISTERED = document.body.dataset.statusAliveUnregistered;
@@ -62,11 +69,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function checkChanges() {
         const deviceNameInputs = document.querySelectorAll('.device-name-input');
+        const deviceIcons = document.querySelectorAll('.device-icon');
         let hasChanges = false;
+
         deviceNameInputs.forEach(input => {
             if (input.value.trim() !== input.dataset.originalName.trim()) {
                 hasChanges = true;
-                return;
+            }
+        });
+
+        deviceIcons.forEach(icon => {
+            const currentIconSrc = icon.getAttribute('src').split('/').pop();
+            if (currentIconSrc !== icon.dataset.originalIcon) {
+                hasChanges = true;
             }
         });
 
@@ -94,6 +109,56 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('input', checkChanges);
     });
 
+    // アイコンクリック時のイベントリスナー設定
+    document.querySelectorAll('.device-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            currentEditingIcon = this; // 現在編集中のアイコンを保存
+            openIconModal(this.dataset.originalIcon); // 現在のアイコンをモーダルに渡す
+        });
+    });
+
+    // モーダルを閉じるボタンのイベントリスナー
+    closeButton.addEventListener('click', function() {
+        iconModal.style.display = 'none';
+    });
+
+    // モーダルの外側をクリックで閉じる
+    window.addEventListener('click', function(event) {
+        if (event.target == iconModal) {
+            iconModal.style.display = 'none';
+        }
+    });
+
+    // アイコン選択モーダルを開く関数
+    function openIconModal(currentIconName) {
+        iconGrid.innerHTML = ''; // グリッドをクリア
+        iconFiles.forEach(iconFile => {
+            const img = document.createElement('img');
+            img.src = `icons/${iconFile}`;
+            img.alt = iconFile;
+            img.dataset.iconName = iconFile;
+            img.classList.add('icon-option');
+            if (iconFile === currentIconName) {
+                img.classList.add('selected');
+            }
+            img.addEventListener('click', function() {
+                // 選択状態を更新
+                iconGrid.querySelectorAll('.icon-option').forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+
+                // 選択されたアイコンを現在のデバイスアイコンに適用
+                if (currentEditingIcon) {
+                    currentEditingIcon.src = `icons/${this.dataset.iconName}`;
+                    // originalIconは変更しない。checkChangesで比較するため
+                    checkChanges(); // 変更をチェック
+                }
+                iconModal.style.display = 'none'; // モーダルを閉じる
+            });
+            iconGrid.appendChild(img);
+        });
+        iconModal.style.display = 'block';
+    }
+
     statusHeader.addEventListener('click', function() {
         currentFilterIndex = (currentFilterIndex + 1) % filterStatuses.length;
         const nextStatus = filterStatuses[currentFilterIndex];
@@ -114,33 +179,36 @@ document.addEventListener('DOMContentLoaded', function() {
         const updatedDevices = [];
 
         rows.forEach(row => {
-            const macAddress = row.querySelector('.mac-address').textContent.trim();
+            const macAddress = row.dataset.macAddress.trim();
             const deviceNameInput = row.querySelector('.device-name-input');
             const currentName = deviceNameInput.value.trim();
             const originalName = deviceNameInput.dataset.originalName || deviceNameInput.defaultValue;
 
-            if (currentName !== originalName) {
+            const deviceIconImg = row.querySelector('.device-icon');
+            const currentIcon = deviceIconImg.getAttribute('src').split('/').pop();
+            const originalIcon = deviceIconImg.dataset.originalIcon;
+
+            if (currentName !== originalName || currentIcon !== originalIcon) {
                  updatedDevices.push({
                     mac: macAddress,
-                    name: currentName
+                    name: currentName,
+                    icon: currentIcon
                  });
             }
         });
 
         if (updatedDevices.length === 0) {
-            messageArea.textContent = '変更されたデバイス名はありません。';
-            // 変更がない場合はボタンの状態をリセット
+            messageArea.textContent = '変更されたデバイス名やアイコンはありません。';
             checkChanges();
             return;
         }
 
-        // 変更箇所: fetchのURLをapi_handler.phpに変更
         fetch('api_handler.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ action: 'save_device_names', devices: updatedDevices }), // actionパラメータを追加
+            body: JSON.stringify({ action: 'save_device_names', devices: updatedDevices }),
         })
         .then(response => {
             const contentType = response.headers.get("content-type");
@@ -155,12 +223,13 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.status === 'success') {
                 messageArea.textContent = '変更が保存されました！ ページを更新してください。';
-                // 保存後、originalNameを更新し、ボタンをdisabledにする
                 rows.forEach(row => {
                     const deviceNameInput = row.querySelector('.device-name-input');
                     deviceNameInput.dataset.originalName = deviceNameInput.value.trim();
+                    const deviceIconImg = row.querySelector('.device-icon');
+                    deviceIconImg.dataset.originalIcon = deviceIconImg.getAttribute('src').split('/').pop();
                 });
-                checkChanges(); // ボタンの状態を更新
+                checkChanges();
                 setTimeout(() => {
                     location.reload();
                 }, 1500);

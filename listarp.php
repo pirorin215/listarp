@@ -12,6 +12,21 @@ header('Content-type: text/html; charset=utf-8');
 $device_map = load_device_mapping();
 $mac_ip_cache = load_mac_ip_cache();
 $last_detected_map = load_last_detected(); // 最終検出日時マップをロード
+$device_icon_map = load_device_icons(); // デバイスアイコンマップをロード
+
+// iconsディレクトリから利用可能なアイコンファイルを取得
+$icon_files = [];
+$icon_dir = __DIR__ . '/icons';
+if (is_dir($icon_dir)) {
+    $files = scandir($icon_dir);
+    foreach ($files as $file) {
+        if (preg_match('/\.(png|jpg|jpeg|gif|svg)$/i', $file)) {
+            $icon_files[] = $file;
+        }
+    }
+    sort($icon_files); // アイコン名をソート
+}
+$icon_files_json = json_encode($icon_files);
 
 // ARPテーブル取得
 $arp_result = shell_exec("arp -an | egrep -v '224.0.0.251|192.168.10.255|192.168.10.0|incomplete'");
@@ -118,6 +133,7 @@ $js_version = filemtime('listarp.js');
     data-status-stopped-registered="<?= htmlspecialchars(STATUS_STOPPED_REGISTERED) ?>"
     data-status-stopped-unregistered="<?= htmlspecialchars(STATUS_STOPPED_UNREGISTERED) ?>"
     data-status-all-display="<?= htmlspecialchars(STATUS_ALL_DISPLAY) ?>"
+    data-icon-files='<?= $icon_files_json ?>'
 >
 
 <div id="controlsContainer">
@@ -137,6 +153,7 @@ $js_version = filemtime('listarp.js');
 <table border='1' id="deviceTable">
     <thead>
         <tr>
+            <th class="col-icon">アイコン</th>
             <th class="col-ip-address">IPアドレス</th>
             <th class="col-device-name">デバイス名</th>
             <th class="col-status" id="statusHeader">状態</th>
@@ -154,6 +171,7 @@ $js_version = filemtime('listarp.js');
         $vendor_name = get_vendor_name($mac); // ベンダー名を取得
         $last_detected_timestamp = $last_detected_map[$mac] ?? null; // 最終検出日時 (Unixタイムスタンプ)
         $last_detected_display = $last_detected_timestamp ? date('Y-m-d H:i:s', $last_detected_timestamp) : '未検出';
+        $device_icon = $device_icon_map[$mac] ?? 'unknown.png'; // デバイスアイコンを取得、なければunknown.png
 
         if (empty($ip)) {
             $is_alive = false;
@@ -176,7 +194,10 @@ $js_version = filemtime('listarp.js');
 
         $ip_td_class = empty($ip) ? "ip-empty" : "";
     ?>
-    <tr data-status-key="<?= htmlspecialchars($status_key) ?>">
+    <tr data-status-key="<?= htmlspecialchars($status_key) ?>" data-mac-address="<?= htmlspecialchars($mac) ?>">
+        <td class="col-icon icon-cell">
+            <img src="icons/<?= htmlspecialchars($device_icon) ?>" alt="Device Icon" class="device-icon" data-original-icon="<?= htmlspecialchars($device_icon) ?>">
+        </td>
         <td class="col-ip-address <?= $ip_td_class ?>"><?= htmlspecialchars($ip) ?></td>
         <td class="col-device-name device-name-cell">
             <input type="text" value="<?= htmlspecialchars($name) ?>" class="device-name-input" data-original-name="<?= htmlspecialchars($name) ?>">
@@ -193,6 +214,15 @@ $js_version = filemtime('listarp.js');
 <?php endforeach; ?>
     </tbody>
 </table>
+
+<!-- アイコン選択モーダル -->
+<div id="iconModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>アイコンを選択</h2>
+        <div id="iconGrid"></div>
+    </div>
+</div>
 
 <script src="listarp.js?v=<?php echo $js_version; ?>"></script>
 

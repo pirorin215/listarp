@@ -14,6 +14,7 @@ define('MAC_IP_CACHE_FILE', CACHE_DIR . '/mac_ipaddress.csv');
 define('LAST_DETECTED_FILE', CACHE_DIR . '/last_detected.csv');
 define('OUI_DB_FILE', CACHE_DIR . '/oui.csv'); // OUIデータベースファイル
 define('OUI_CACHE_FILE', CACHE_DIR . '/oui.txt'); // WebからダウンロードしたOUIファイルのキャッシュパス
+define('DEVICE_ICONS_FILE', CACHE_DIR . '/device_icons.csv'); // デバイスアイコンのマッピングファイル
 
 // バックアップ設定
 define('BACKUP_GENERATIONS', 5);

@@ -237,3 +237,20 @@ function save_last_detected($detected_map) {
     return write_map_to_csv(LAST_DETECTED_FILE, $detected_map);
 }
 
+/**
+ * MACアドレスとデバイスアイコンのマッピングを読み込む
+ * @return array MACアドレス => アイコンファイル名の連想配列
+ */
+function load_device_icons() {
+    return read_csv_to_map(DEVICE_ICONS_FILE);
+}
+
+/**
+ * MACアドレスとデバイスアイコンのマッピングを保存する
+ * @param array $map MACアドレス => アイコンファイル名の連想配列
+ * @return bool 成功した場合 true, 失敗した場合 false
+ */
+function save_device_icons($map) {
+    return write_map_to_csv(DEVICE_ICONS_FILE, $map, true); // バックアップを有効にする
+}
+
