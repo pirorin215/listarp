@@ -14,7 +14,7 @@ $mac_ip_cache = load_mac_ip_cache();
 $last_detected_map = load_last_detected(); // 最終検出日時マップをロード
 
 // ARPテーブル取得
-$arp_result = shell_exec("arp -an | egrep -v '224.0.0.251|192.168.10.255|192.168.10.0'");
+$arp_result = shell_exec("arp -an | egrep -v '224.0.0.251|192.168.10.255|192.168.10.0|incomplete'");
 $lines = explode("\n", trim($arp_result));
 
 $arp_devices = []; // ARPで検出されたデバイスをMACアドレスをキーとして格納
