@@ -5,6 +5,8 @@
 require_once 'config.php';
 require_once 'utils.php';
 
+set_time_limit(120); // 120秒に設定（0にすると無制限）
+
 // ここからGETリクエスト（通常のページ表示）の場合の処理
 ob_implicit_flush(true);
 header('Content-type: text/html; charset=utf-8');
@@ -29,7 +31,7 @@ if (is_dir($icon_dir)) {
 $icon_files_json = json_encode($icon_files);
 
 // ARPテーブル取得
-$arp_result = shell_exec("arp -an | egrep -v '224.0.0.251|192.168.10.255|192.168.10.0|incomplete'");
+$arp_result = shell_exec("arp -an | egrep -v '224.0.0.251|192.168.0.255|192.168.0.0|incomplete'");
 $lines = explode("\n", trim($arp_result));
 
 $arp_devices = []; // ARPで検出されたデバイスをMACアドレスをキーとして格納
